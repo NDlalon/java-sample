@@ -5,8 +5,10 @@ public class BinarySeacherTree {
 	public BinarySeacherTree() {
 		double[] data=new double[] {12,5,18,2,9,15,19,13,17};
 		double obj=18;
+		double dobj=18;
 		Node root=null;
 		Node SearchNode=null;
+		Node DeleteNode=null;
 		
 		for(int i=0;i<data.length;i++) {
 			root=Insertion(root,data[i]);
@@ -32,6 +34,19 @@ public class BinarySeacherTree {
 		
 		System.out.println("Maximum:"+Maximum(root).getValue());
 		System.out.println("Minimum:"+Minimum(root).getValue());
+		
+		System.out.println();
+		
+		DeleteNode=TreeSearch(root,dobj);
+		System.out.println();
+		System.out.println("Delete:"+dobj);
+		if(DeleteNode!=null) {
+			root=TreeDelete(root,DeleteNode);
+			Treewalk(root);
+		}
+		else {
+			System.out.println("Delete fall");
+		}
 		
 	}
 	
@@ -97,6 +112,68 @@ public class BinarySeacherTree {
 		}
 	}
 	
+	public Node Transplant(Node d,Node r) {
+		if(r!=null) {
+			r.setparentNode(d.getparentNode());
+		}
+		if(d.getparentNode()==null) {
+			d=r;
+		}
+		else if(d==d.getparentNode().getleftNode()) {
+			d.getparentNode().setleftNode(r);
+		}
+		else {
+			d.getparentNode().setrightNode(r);
+		}
+		
+		while(d.getparentNode()!=null) {
+			d=d.getparentNode();
+		}
+		
+		return d;
+	}
+	
+	public Node TreeDelete(Node node,Node delete) {
+		
+		if(delete.getleftNode()==null) {
+			node=Transplant(delete,delete.getrightNode());
+		}
+		else if(delete.getrightNode()==null) {
+			node=Transplant(delete,delete.getleftNode());
+		}
+		else {
+			if(delete.getparentNode()==null) {
+				delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
+				Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
+				delete.getrightNode().setparentNode(null);
+				node=delete.getrightNode();
+			}
+			else if(delete.getparentNode().getleftNode()==delete) {
+				delete.getrightNode().setparentNode(delete.getparentNode());
+				delete.getparentNode().setleftNode(delete.getrightNode());
+				delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
+				Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
+				while(delete.getparentNode()!=null) {
+					delete=delete.getparentNode();
+				}
+				node=delete;
+			}
+			else {
+				delete.getrightNode().setparentNode(delete.getparentNode());
+				delete.getparentNode().setrightNode(delete.getrightNode());
+				delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
+				Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
+				while(delete.getparentNode()!=null) {
+					delete=delete.getparentNode();
+				}
+				node=delete;
+			}
+			
+		}
+		
+		return node;
+	}
+	
 	public Node Minimum(Node node) {
 		while(node.getleftNode()!=null) {
 			node=node.getleftNode();
@@ -105,7 +182,7 @@ public class BinarySeacherTree {
 		return node;
 	}
 	
-public Node Maximum(Node node) {
+	public Node Maximum(Node node) {
 		while(node.getrightNode()!=null) {
 			node=node.getrightNode();
 		}
