@@ -39,14 +39,9 @@ public class BinarySeacherTree {
 		
 		DeleteNode=TreeSearch(root,dobj);
 		System.out.println();
-		System.out.println("Delete:"+dobj);
-		if(DeleteNode!=null) {
-			root=TreeDelete(root,DeleteNode);
-			Treewalk(root);
-		}
-		else {
-			System.out.println("Delete fall");
-		}
+		root=TreeDelete(root,DeleteNode);
+		Treewalk(root);
+		System.out.println();
 		
 	}
 	
@@ -135,40 +130,46 @@ public class BinarySeacherTree {
 	
 	public Node TreeDelete(Node node,Node delete) {
 		
-		if(delete.getleftNode()==null) {
-			node=Transplant(delete,delete.getrightNode());
-		}
-		else if(delete.getrightNode()==null) {
-			node=Transplant(delete,delete.getleftNode());
-		}
-		else {
-			if(delete.getparentNode()==null) {
-				delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
-				Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
-				delete.getrightNode().setparentNode(null);
-				node=delete.getrightNode();
+		if(delete!=null) {
+			System.out.println("Delete:"+delete.getValue());
+			if(delete.getleftNode()==null) {
+				node=Transplant(delete,delete.getrightNode());
 			}
-			else if(delete.getparentNode().getleftNode()==delete) {
-				delete.getrightNode().setparentNode(delete.getparentNode());
-				delete.getparentNode().setleftNode(delete.getrightNode());
-				delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
-				Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
-				while(delete.getparentNode()!=null) {
-					delete=delete.getparentNode();
-				}
-				node=delete;
+			else if(delete.getrightNode()==null) {
+				node=Transplant(delete,delete.getleftNode());
 			}
 			else {
-				delete.getrightNode().setparentNode(delete.getparentNode());
-				delete.getparentNode().setrightNode(delete.getrightNode());
-				delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
-				Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
-				while(delete.getparentNode()!=null) {
-					delete=delete.getparentNode();
+				if(delete.getparentNode()==null) {
+					delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
+					Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
+					delete.getrightNode().setparentNode(null);
+					node=delete.getrightNode();
 				}
-				node=delete;
-			}
+				else if(delete.getparentNode().getleftNode()==delete) {
+					delete.getrightNode().setparentNode(delete.getparentNode());
+					delete.getparentNode().setleftNode(delete.getrightNode());
+					delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
+					Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
+					while(delete.getparentNode()!=null) {
+						delete=delete.getparentNode();
+					}
+					node=delete;
+				}
+				else {
+					delete.getrightNode().setparentNode(delete.getparentNode());
+					delete.getparentNode().setrightNode(delete.getrightNode());
+					delete.getleftNode().setparentNode(Minimum(delete.getrightNode()));
+					Minimum(delete.getrightNode()).setleftNode(delete.getleftNode());;
+					while(delete.getparentNode()!=null) {
+						delete=delete.getparentNode();
+					}
+					node=delete;
+				}
 			
+			}
+		}
+		else {
+			System.out.println("Delete fall\nThe entered was not found");
 		}
 		
 		return node;
